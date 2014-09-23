@@ -2,6 +2,7 @@ package com.intel.android.yamba;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,8 +41,12 @@ public class StatusActivity extends Activity implements TextWatcher {
     }
 
     public void onPostClick(View v) {
-        PostStatusTask task = new PostStatusTask();
-        task.execute(mStatusText.getText().toString());
+        Intent intent = new Intent(this, StatusUpdateService.class);
+        intent.putExtra(StatusUpdateService.KEY_MESSAGE, mStatusText.getText().toString());
+
+        startService(intent);
+
+        mStatusText.getText().clear();
     }
 
     private class PostStatusTask extends AsyncTask<String, Void, Boolean> {
