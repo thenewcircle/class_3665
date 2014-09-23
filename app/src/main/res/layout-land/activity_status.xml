@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/button_post"
         android:id="@+id/button_status"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:onClick="onPostClick"
         />
@@ -24,14 +24,13 @@
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/text_status"
-        android:layout_below="@+id/button_status"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/button_status"
-        android:layout_alignEnd="@+id/button_status"
+        android:layout_toLeftOf="@+id/button_status"
         android:hint="@string/post_hint"
-        android:gravity="start|top"/>
+        android:gravity="start|top"
+        android:layout_alignTop="@+id/text_counter"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,6 +39,5 @@
         tools:text="140"
         android:id="@+id/text_counter"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>
