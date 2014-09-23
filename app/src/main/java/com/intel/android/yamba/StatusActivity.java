@@ -37,7 +37,13 @@ public class StatusActivity extends Activity implements TextWatcher {
         mPostButton = (Button) findViewById(R.id.button_status);
 
         mStatusText.addTextChangedListener(this);
-        mStatusText.setText(null);
+
+        final Intent intent = getIntent();
+        if (intent.hasExtra(StatusUpdateService.KEY_MESSAGE)) {
+            mStatusText.setText(intent.getStringExtra(StatusUpdateService.KEY_MESSAGE));
+        } else {
+            mStatusText.setText(null);
+        }
     }
 
     public void onPostClick(View v) {
