@@ -25,6 +25,13 @@
             android:name="com.intel.android.yamba.RefreshService"
             android:exported="false" >
         </service>
+
+        <provider
+            android:name="com.intel.android.yamba.StatusProvider"
+            android:authorities="com.intel.android.yamba.provider"
+            android:enabled="true"
+            android:exported="true" >
+        </provider>
     </application>
 
 </manifest>
