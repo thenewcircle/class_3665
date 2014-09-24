@@ -109,6 +109,12 @@ public class StatusActivity extends Activity implements TextWatcher {
             return true;
         }
 
+        if (id == R.id.action_refresh) {
+            Intent intent = new Intent(this, RefreshService.class);
+            startService(intent);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

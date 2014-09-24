@@ -21,6 +21,10 @@
             android:name="com.intel.android.yamba.StatusUpdateService"
             android:exported="false" >
         </service>
+        <service
+            android:name="com.intel.android.yamba.RefreshService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>
