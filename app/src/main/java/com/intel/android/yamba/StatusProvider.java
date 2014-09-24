@@ -46,7 +46,8 @@ public class StatusProvider extends ContentProvider {
             case MATCH_LIST:
                 SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-                long id = db.insert(StatusContract.TABLE_NAME, null, values);
+                long id = db.insertWithOnConflict(StatusContract.TABLE_NAME, null, values,
+                        SQLiteDatabase.CONFLICT_IGNORE);
                 if (id > 0) {
                     //When insert successful, notify observers
                     getContext().getContentResolver().notifyChange(uri, null);
@@ -59,6 +60,40 @@ public class StatusProvider extends ContentProvider {
         }
     }
 
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        switch (sUriMatcher.match(uri)) {
+            case MATCH_LIST:
+                SQLiteDatabase db = mDbHelper.getWritableDatabase();
+                int inserted = 0;
+                try {
+                    db.beginTransaction();
+
+                    for (ContentValues item : values) {
+                        long id = db.insertWithOnConflict(StatusContract.TABLE_NAME, null, item,
+                                SQLiteDatabase.CONFLICT_IGNORE);
+                        if (id > 0) {
+                            inserted++;
+                        }
+                    }
+
+                    db.setTransactionSuccessful();
+                } catch (Exception e) {
+                    //Reset count to invalid value
+                    inserted = -1;
+                } finally {
+                    db.endTransaction();
+                }
+
+                if (inserted > 0) {
+                    //When insert successful, notify observers
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                return inserted;
+            default:
+                throw new IllegalArgumentException("Cannot insert an existing record.");
+        }
+    }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,

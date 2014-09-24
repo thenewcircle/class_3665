@@ -20,6 +20,7 @@ public final class StatusContract {
             .authority(AUTHORITY)
             .build();
 
+
     /* Data MIME Types */
     public static final String CONTENT_ITEM = ContentResolver.CURSOR_ITEM_BASE_TYPE
             + "/vnd.intel.android.yamba";
