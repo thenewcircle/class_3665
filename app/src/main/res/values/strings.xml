@@ -11,4 +11,6 @@
     <string name="action_post">Post Status</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_empty">No Status Updates</string>
+    <string name="title_activity_status_detail">Yamba</string>
+
 </resources>
