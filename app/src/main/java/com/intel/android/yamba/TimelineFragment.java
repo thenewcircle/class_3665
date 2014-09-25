@@ -1,17 +1,22 @@
 package com.intel.android.yamba;
 
 import android.app.Activity;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
+import static com.intel.android.yamba.StatusContract.StatusColumns.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,12 +27,14 @@ import org.w3c.dom.Text;
  * create an instance of this fragment.
  *
  */
-public class TimelineFragment extends Fragment {
+public class TimelineFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private OnFragmentInteractionListener mListener;
 
     private ListView mListView;
     private TextView mEmptyView;
+    private SimpleCursorAdapter mAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -50,9 +57,9 @@ public class TimelineFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -64,7 +71,29 @@ public class TimelineFragment extends Fragment {
         mListView = (ListView) root.findViewById(R.id.list);
         mEmptyView = (TextView) root.findViewById(R.id.empty);
 
+        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.timeline_row, null,
+                new String[]{CREATED_AT, USER, MESSAGE},
+                new int[] {R.id.text_created_at, R.id.text_user, R.id.text_message},
+                0);
+        mAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex == cursor.getColumnIndex(CREATED_AT)) {
+                    long createdAt = cursor.getLong(columnIndex);
+                    CharSequence createdAtText = DateUtils.getRelativeTimeSpanString(createdAt,
+                            System.currentTimeMillis(), 0);
+
+                    TextView timestampView = (TextView) view.findViewById(R.id.text_created_at);
+                    timestampView.setText(createdAtText);
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
         mListView.setEmptyView(mEmptyView);
+        mListView.setAdapter(mAdapter);
 
         return root;
     }
@@ -84,6 +113,23 @@ public class TimelineFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = Uri.withAppendedPath(StatusContract.CONTENT_URI, StatusContract.TABLE_NAME);
+        return new CursorLoader(getActivity(), uri, null, null, null,
+                StatusContract.DEFAULT_SORT_ORDER);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
     }
 
     /**

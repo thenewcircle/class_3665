@@ -34,5 +34,5 @@ public final class StatusContract {
     }
 
     /* Default Sorting Order for Cursors */
-    public static final String DEFAUT_SORT_ORDER = StatusColumns.CREATED_AT + " DESC";
+    public static final String DEFAULT_SORT_ORDER = StatusColumns.CREATED_AT + " DESC";
 }
