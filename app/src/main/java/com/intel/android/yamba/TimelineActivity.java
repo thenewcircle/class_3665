@@ -54,6 +54,17 @@ public class TimelineActivity extends Activity implements
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+        if (findViewById(R.id.fragment_details) == null) {
+            Intent intent = new Intent(this, StatusDetailActivity.class);
+            intent.setData(uri);
 
+            startActivity(intent);
+        } else {
+            //We are in two-pane mode
+            StatusDetailFragment fragment = StatusDetailFragment.newInstance(uri);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_details, fragment)
+                    .commit();
+        }
     }
 }

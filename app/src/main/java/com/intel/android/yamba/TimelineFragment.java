@@ -2,6 +2,7 @@ package com.intel.android.yamba;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -12,6 +13,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -28,7 +30,7 @@ import static com.intel.android.yamba.StatusContract.StatusColumns.*;
  *
  */
 public class TimelineFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
     private OnFragmentInteractionListener mListener;
 
@@ -94,6 +96,7 @@ public class TimelineFragment extends Fragment implements
 
         mListView.setEmptyView(mEmptyView);
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
 
         return root;
     }
@@ -130,6 +133,14 @@ public class TimelineFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Uri baseUri = Uri.withAppendedPath(StatusContract.CONTENT_URI, StatusContract.TABLE_NAME);
+        if (mListener != null) {
+            mListener.onFragmentInteraction(ContentUris.withAppendedId(baseUri, id));
+        }
     }
 
     /**
