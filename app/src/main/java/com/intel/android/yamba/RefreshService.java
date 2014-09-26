@@ -3,6 +3,7 @@ package com.intel.android.yamba;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 public class RefreshService extends IntentService {
 
-    private static final int NOTE_ID = 999;
+    public static final int NOTE_ID = 999;
 
     private YambaClient mYambaClient;
     private NotificationManager mNotificationManager;
@@ -58,14 +59,20 @@ public class RefreshService extends IntentService {
                 Uri uri = Uri.withAppendedPath(StatusContract.CONTENT_URI, StatusContract.TABLE_NAME);
                 int affected = getContentResolver().bulkInsert(uri, values);
 
-                Notification note = new Notification.Builder(this)
-                        .setContentTitle("New Status Updates...")
-                        .setContentText(String.format("You have %d new updates.", affected))
-                        .setTicker("New Status Updates...")
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .build();
+                if (affected > 0 && !TimelineActivity.isInTimeline()) {
+                    PendingIntent trigger = PendingIntent.getActivity(this, 0,
+                            new Intent(this, TimelineActivity.class), 0);
 
-                mNotificationManager.notify(NOTE_ID, note);
+                    Notification note = new Notification.Builder(this)
+                            .setContentTitle("New Status Updates...")
+                            .setContentText(String.format("You have %d new updates.", affected))
+                            .setContentIntent(trigger)
+                            .setTicker("New Status Updates...")
+                            .setSmallIcon(R.drawable.ic_launcher)
+                            .build();
+
+                    mNotificationManager.notify(NOTE_ID, note);
+                }
 
             } catch (YambaClientException e) {
                 e.printStackTrace();

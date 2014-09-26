@@ -1,6 +1,7 @@
 package com.intel.android.yamba;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,12 +12,32 @@ import android.view.MenuItem;
 public class TimelineActivity extends Activity implements
         TimelineFragment.OnFragmentInteractionListener {
 
+    private static boolean mInTimeline = false;
+    public static boolean isInTimeline() {
+        return mInTimeline;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mInTimeline = true;
+
+        //Clear any status update notification
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.cancel(RefreshService.NOTE_ID);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mInTimeline = false;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -34,6 +55,8 @@ public class TimelineActivity extends Activity implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="refreshNames">
+        <item>Disable Auto-Refresh</item>
+        <item>5 Minutes</item>
+        <item>1 Hour</item>
+        <item>1 Day</item>
+    </string-array>
+    <string-array name="refreshValues">
+        <item>0</item>
+        <item>300000</item>
+        <item>3600000</item>
+        <item>86400000</item>
+    </string-array>
+</resources>

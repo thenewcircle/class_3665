@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="prefAutoRefresh"
+        android:title="Auto-Refresh Interval"
+        android:summary="Interval for Refreshing Status Updates"
+        android:entries="@array/refreshNames"
+        android:entryValues="@array/refreshValues"
+        android:defaultValue="0"/>
+</PreferenceScreen>
